@@ -1,0 +1,645 @@
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import styles from './css/styles'
+import {
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  TextInput,
+  Button,
+  TouchableHighlight,
+  ScrollView,
+  
+} from "react-native";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import 'react-native-gesture-handler';
+
+const Menus = [
+  {
+   
+    url: "https://ethereum.org/static/c3bcc8c47890ffd2a2c329972c73d0fd/31987/ethereum-logo-portrait-black-gray.png",
+    menuTitle: "ETHEREUM",
+    menuDesc: "1 ETHEREUM = 86,356.98 Philippine peso",
+    
+   
+  },
+  {
+    url: "data:image/png;base64,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",
+    menuTitle: "XRP",
+    menuDesc:
+      "1 XRP = 21.56 Philippine peso",
+  },
+  {
+    url: "https://d12avs59aaiyvm.cloudfront.net/wp-content/uploads/2018/02/bitcoin-logo-crypto.png",
+    menuTitle: "BITCOIN",
+    menuDesc:
+      "1 BITCOIN = 2,771,966.86 Philippine peso",
+    
+    },
+];
+
+
+function Home({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.BG}
+      >
+        <View style={[styles.row, { marginTop: -150 }]}>
+          <Image style={styles.logo} source={require("./assets/logo.png")} />
+        </View>
+        <Text style={styles.intro}>WELCOME TO BINANCE</Text>
+        <View style={styles.row}>
+          <View style={[{ width: 120, marginTop: 30 }]}>
+            <Button
+              title="LOGIN"
+              color="#fca311"
+              onPress={() => navigation.navigate("Login")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <View style={[{ width: 120, marginTop: 10 }]}>
+            <Button
+              style={styles.btn}
+              title="Register"
+              color="#fca311"
+              onPress={() => navigation.navigate("Register")}
+            />
+          </View>
+        </View>
+      </ImageBackground>
+    </View>
+  );
+}
+
+
+function BINANCE({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.BG}
+      >
+        <View style={[styles.row, { marginTop: -150 }]}>
+          <Image style={styles.binancelogo} source={require("./assets/logo.png")} />
+        </View>
+        <View>
+        <Text style={styles.binancetext}>Binance is a cryptocurrency exchange that provides a platform for trading various cryptocurrencies. As of January 2018, Binance was the largest cryptocurrency exchange in the world in terms of trading volume. Binance was founded by Changpeng Zhao, a developer who had previously created high frequency trading software.</Text>
+        </View>
+        <View style={styles.binancebutton1}>
+          <View>
+            <Button
+              title="Coins"
+              color="#fca311"
+              onPress={() => navigation.navigate("Coins")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.binancebutton2}>
+          <View>
+            <Button
+              title="DEPOSIT"
+              color="#fca311"
+              onPress={() => navigation.navigate("Deposit")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.binancebutton3}>
+          <View>
+            <Button
+              title="Withdraw"
+              color="#fca311"
+              onPress={() => navigation.navigate("Withdraw")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.binancebutton4}>
+          <View>
+            <Button
+              
+              title="CONTACT"
+              color="#fca311"
+              onPress={() => navigation.navigate("Contact")}
+            />
+          </View>
+        </View>
+      </ImageBackground>
+    </View>
+  );
+}
+
+function Deposit({ navigation }) {
+  return (
+    <ScrollView>
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.BG}
+      >
+    
+
+        <Text style={styles.howtodeposit}>How to Deposit</Text>
+        <Text style={styles.aboutUs}>1. Log in to your Binance account. Once you’re logged in, move your mouse to Wallet, and click on Fiat and Spot.</Text>
+        <Text style={styles.aboutUs}>2. Click on Deposit.</Text>
+        <Text style={styles.aboutUs}>3. Select the Crypto tab.</Text>
+        <Text style={styles.aboutUs}>4. Choose the cryptocurrency you would like to deposit.</Text>
+        <Text style={styles.aboutUs}>5. If the cryptocurrency is issued on multiple networks, select which one you’d like to make your deposit on.</Text>
+        <Text style={styles.aboutUs}>6. Depositing BNB requires both a deposit address and a MEMO. You’ll need to copy and paste them both in the appropriate fields in the wallet you’re depositing from.</Text>
+        <Text style={styles.aboutUs}>7. Tap on BNB in your Trust Wallet. </Text>
+        <Text style={styles.aboutUs}>8. Tap on Send.</Text>
+        <Text style={styles.aboutUs}>9. This is where you’ll need to paste the deposit address and MEMO from the deposit page on Binance. You can also use your phone camera to scan the QR code.</Text>
+        <Text style={styles.aboutUs}>10. Confirm the transaction. Once you’ve sent it from your Trust Wallet, you can look at its status in a block explorer by searching for the transaction ID. For example, you can use mintscan for Binance Chain. </Text>
+        <Text style={styles.aboutUs}>11. You’ll be able to see your incoming deposit under your Transaction history on Binance.</Text>
+        <Text style={styles.aboutUs}>Video tutorial: https://youtu.be/6r-L0RcKPhU </Text>
+        
+        <View style={styles.depositbutton1}>
+          <View>
+            <Button
+              title="Coins"
+              color="#fca311"
+              onPress={() => navigation.navigate("Coins")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.depositbutton2}>
+          <View>
+            <Button
+              title="DEPOSIT"
+              color="#fca311"
+              onPress={() => navigation.navigate("Deposit")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.depositbutton3}>
+          <View>
+            <Button
+              title="Withdraw"
+              color="#fca311"
+              onPress={() => navigation.navigate("Withdraw")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.depositbutton4}>
+          <View>
+            <Button
+              
+              title="CONTACT"
+              color="#fca311"
+              onPress={() => navigation.navigate("Contact")}
+            />
+          </View>
+        </View>
+      </ImageBackground>
+    </View>
+    </ScrollView>
+  );
+}
+
+function Withdraw({ navigation }) {
+  return (
+     <ScrollView>
+    <View style={styles.container}>
+     
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.BG}
+      >
+        <View style={[styles.row, { marginTop: -150 }]}>
+          <Image style={styles.logo} source={require("./assets/logo.png")} />
+        </View>
+
+        <Text style={styles.howtodeposit}>How to Withdraw</Text>
+        <Text style={styles.aboutUs}>1. Log in to your Binance account. Once you’re logged in, move your mouse to Wallet, and click on Fiat and Spot.</Text>
+        <Text style={styles.aboutUs}>2. Click on Withdraw.</Text>
+        <Text style={styles.aboutUs}>3. Select the Crypto tab.</Text>
+        <Text style={styles.aboutUs}>4. Choose the cryptocurrency you’d like to withdraw.</Text>
+        <Text style={styles.aboutUs}>5. If the cryptocurrency is issued on multiple networks, select which one you’d like to make your withdrawal on. </Text>
+        <Text style={styles.aboutUs}>6. Tap on BNB in your Trust Wallet.</Text>
+        <Text style={styles.aboutUs}>7. Tap on Receive.</Text>
+        <Text style={styles.aboutUs}>8. Copy your BNB address.</Text>
+        <Text style={styles.aboutUs}>9. Paste it on the Binance withdrawal page (Recipient’s BNB Address).</Text>
+        <Text style={styles.aboutUs}>10. If everything looks good, click on Submit. </Text>
+        <Text style={styles.aboutUs}>11. Click on Send Code, and enter the six-digit code you received in your email.</Text>
+        <Text style={styles.aboutUs}>12. Enter your 2FA code.</Text>
+        <Text style={styles.aboutUs}>13. If everything is in order, click Submit. You’ll be able to see your outgoing withdrawals in your Transaction history.</Text>
+        <Text style={styles.aboutUs}>Video tutorial: https://youtu.be/6r-L0RcKPhU </Text>
+
+        <View style={styles.withdrawbutton1}>
+          <View>
+            <Button
+              title="Coins"
+              color="#fca311"
+              onPress={() => navigation.navigate("Coins")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.withdrawbutton2}>
+          <View>
+            <Button
+              title="DEPOSIT"
+              color="#fca311"
+              onPress={() => navigation.navigate("Deposit")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.withdrawbutton3}>
+          <View>
+            <Button
+              title="Withdraw"
+              color="#fca311"
+              onPress={() => navigation.navigate("Withdraw")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.withdrawbutton4}>
+          <View>
+            <Button
+              
+              title="CONTACT"
+              color="#fca311"
+              onPress={() => navigation.navigate("Contact")}
+            />
+          </View>
+        </View>
+
+      </ImageBackground>
+    </View>
+    </ScrollView>
+  );
+}
+
+function Contact({ navigation }) {
+  return (
+    <ScrollView>
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.BG}>
+        
+        <View>
+          <Image style={styles.picture} source={require("./assets/jaz.jpg")} />
+          <Image style={styles.picture1} source={require("./assets/miah.jpg")} />
+        </View>
+
+        <Text style={styles.contacttext1}>FB: Jazpher Remigio</Text>
+        <Text style={styles.contacttext2}>Gmail: jazgwaporem21@gmail.com</Text>
+        <Text style={styles.contacttext3}>Contact#: 09111111111</Text>
+
+        <Text style={styles.contacttext4}>FB: Jeremiah Taculod</Text>
+        <Text style={styles.contacttext5}>Gmail: jeremiahpogi@gmail.com</Text>
+        <Text style={styles.contacttext6}>Contact#: 09222222222</Text>
+        
+
+        <View style={styles.contactbutton1}>
+          <View>
+            <Button
+              title="Coins"
+              color="#fca311"
+              onPress={() => navigation.navigate("Coins")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.contactbutton2}>
+          <View>
+            <Button
+              title="DEPOSIT"
+              color="#fca311"
+              onPress={() => navigation.navigate("Deposit")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.contactbutton3}>
+          <View>
+            <Button
+              title="Withdraw"
+              color="#fca311"
+              onPress={() => navigation.navigate("Withdraw")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.contactbutton4}>
+          <View>
+            <Button
+              
+              title="CONTACT"
+              color="#fca311"
+              onPress={() => navigation.navigate("Contact")}
+            />
+          </View>
+        </View>
+
+      </ImageBackground>
+    </View>
+    </ScrollView>
+  );
+}
+
+function Ethereum({ navigation }) {
+  return (
+    <ScrollView>
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.ethbg}
+      >
+        <View >
+          <Image style={styles.ethlogo} source={require("./assets/eth.png")} />
+        </View>
+
+       
+        <Text style={styles.ethtext}>Ethereum (ETH) price history from 2015 to March 12, 2021
+Published by Raynor de Best, Mar 12, 2021 </Text>
+<Text style={styles.ethtext1}> The Ethereum price in USD kept growing in value over the course of February 2021, at one point nearly reaching 1,800 U.S. dollars. After Bitcoin and Bitcoin Cash, it is the third most known cryptocurrency in the United States. Still, the majority of those surveyed were not aware of Ethereum.
+What is a cryptocurrency?
+Cryptocurrencies are digital currencies that are not regulated by any centralized authority, such as a government or bank. They are created through a process called “mining”, when miners sell processing power to the currency’s server in exchange for an amount of the currency. For security, every transaction is stored on a distributed ledger using a technology called “blockchain”.
+The cryptocurrency market
+Given the price volatility of Ethereum and other cryptocurrencies, investors seem more interested in them than consumers at the moment. As such, many are looking to the market capitalization of major cryptocurrencies. Ethereum has a relatively large share of the market at the moment, but newer coins are gaining in popularity. </Text>
+        
+      
+        </ImageBackground>
+    </View>
+    </ScrollView>
+  );
+}
+
+function Xrp({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.xrpbg}
+      >
+        <View style={[styles.row, { marginTop: -150 }]}>
+          <Image style={styles.xrplogo} source={require("./assets/xrp.png")} />
+        </View>
+
+        
+        <Text style={styles.xrptext}>XRP Price Live Data</Text>
+        <Text style={styles.xrptext1}>The live XRP price today is $0.447320 USD with a 24-hour trading volume of $2,597,324,383 USD. XRP is down 2.53% in the last 24 hours. The current CoinMarketCap ranking is #7, with a live market cap of $20,310,149,874 USD. It has a circulating supply of 45,404,028,640 XRP coins and a max. supply of 100,000,000,000 XRP coins.</Text>
+
+        </ImageBackground>
+    </View>
+  );
+}
+
+function Bitcoin({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.btcbg}
+      >
+        <View style={[styles.row, { marginTop: -150 }]}>
+          <Image style={styles.btclogo} source={require("./assets/bitcoin.png")} />
+        </View>
+   
+        <Text style={styles.btctext}>About Bitcoin </Text>
+        <Text style={styles.btctext1}>Bitcoin was the first cryptocurrency to successfully record transactions on a secure, decentralized blockchain-based network. Launched in early 2009 by its pseudonymous creator Satoshi Nakamoto, Bitcoin is the largest cryptocurrency measured by market capitalization and amount of data stored on its blockchain. The Bitcoin software is free and available online to anyone who wants to run a Bitcoin node and store their own copy of the Bitcoin blockchain.  </Text>
+
+        </ImageBackground>
+    </View>
+  );
+}
+
+function Coins({ navigation }) {
+  return (
+    <ScrollView>
+      {Menus.map((menu, key) => (
+        <View key={key} style={{ flexDirection: "row" }}>
+          <TouchableHighlight
+            activeOpacity={0.6}
+            underlayColor="#ecf0f1"
+            onPress={() => navigation.navigate(menu.menuTitle)}
+          >
+            <View style={styles.cardRounded}>
+              <Image style={styles.cardImage} source={{ uri: menu.url }} />
+              <View style={{ flexDirection: "row", alignContent: "flex-end" }}>
+                
+              </View>
+              <Text style={styles.menuTitle}>{menu.menuTitle}</Text>
+              <Text style={styles.menuDesc} numberOfLines={1}>
+                {menu.menuDesc}
+              </Text>
+              
+            </View>
+          </TouchableHighlight>
+        </View>
+      ))}
+
+    <View style={styles.ethbutton}>
+        <View>
+            <Button
+              
+              title=" "
+              color="black"
+              onPress={() => navigation.navigate("Ethereum")}
+            />
+          </View>
+          </View>
+
+          <View style={styles.xrpbutton}>
+        <View>
+            <Button
+              
+              title=""
+              color="black"
+              onPress={() => navigation.navigate("Xrp")}
+            />
+          </View>
+          </View>
+
+          <View style={styles.btcbutton}>
+        <View>
+            <Button
+              
+              title=""
+              color="black"
+              onPress={() => navigation.navigate("Bitcoin")}
+            />
+          </View>
+          </View>
+    </ScrollView>
+  );
+}
+
+function MenuDetail(props) {
+  return (
+    <View style={styles.container}>
+    <ImageBackground source={require("./assets/bg.jpg")} style={styles.BG}>
+      <Text style={styles.coinscolor}>asdasd</Text>
+     
+      <Text>{props.route.params.menuTitle}</Text>
+      <Text>{props.route.params.menuDesc}</Text>
+  </ImageBackground> 
+  
+  </View>
+     
+  );
+}
+
+function Login({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("./assets/bg.jpg")}
+        style={styles.BG}
+      >
+        <View style={[styles.row, { marginTop: -150 }]}>
+          <Image style={styles.logologin} source={require("./assets/logo.png")} />
+        </View>
+
+        <Text style={styles.intro}>BINANCE</Text>
+
+        <Text style={styles.labellogin}>Username: </Text>
+        <View style={styles.row}>
+          <TextInput style={styles.inputTextboxlogin} />
+        </View>
+
+        <Text style={styles.labellogin}>Password: </Text>
+        <View style={styles.row}>
+          <TextInput style={styles.inputTextboxlogin} secureTextEntry={true} />
+        </View>
+
+        <View style={styles.row}>
+          <View style={[{ width: 120, marginTop: 15 }]}>
+            <Button
+              title="Sign In"
+              color="#fca311"
+              onPress={() => navigation.navigate("BINANCE")}
+            />
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <View style={[{ width: 120, marginTop: 8 }]}>
+            <Button
+              style={styles.btn}
+              title="Register"
+              color="#fca311"
+              onPress={() => navigation.navigate("Register")}
+            />
+          </View>
+        </View>
+      </ImageBackground>
+    </View>
+  );
+}
+
+function Register({ navigation }) {
+  return (
+    <View style={styles.container}>
+    <ImageBackground
+      source={require("./assets/bg.jpg")}
+      style={styles.BG}
+    >
+      <View style={[styles.row, { marginTop: -150 }]}>
+        <Image style={styles.logoregister} source={require("./assets/logo.png")} />
+      </View>
+
+      <Text style={styles.registerintro}>BINANCE</Text>
+
+      <Text style={styles.label}>Username: </Text>
+      <View style={styles.row}>
+        <TextInput style={styles.inputTextbox} />
+      </View>
+
+      <Text style={styles.label}>Email: </Text>
+      <View style={styles.row}>
+        <TextInput style={styles.inputTextbox} />
+      </View>
+
+
+
+      <Text style={styles.label}>Password: </Text>
+      <View style={styles.row}>
+        <TextInput style={styles.inputTextbox} secureTextEntry={true} />
+      </View>
+
+      <Text style={styles.label}>Confirm Password: </Text>
+      <View style={styles.row}>
+        <TextInput style={styles.inputTextbox} secureTextEntry={true} />
+      </View>
+
+      <View style={styles.rowregister}>
+        <View style={[{ width: 120, marginTop: 4 }]}>
+          <Button
+           style={styles.btnregsiter}
+            title="Submit"
+            color="#fca311"
+            onPress={() => navigation.navigate("Login")}
+          />
+        </View>
+      </View>
+
+    
+    </ImageBackground>
+  </View>
+);
+}
+
+const Stack = createStackNavigator(); //Create stack navigation
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName=" "
+        screenOptions={{
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "black",
+          },
+          headerTintColor: "gold",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }} >
+
+        <Stack.Screen name=" " component={Home} /> 
+        <Stack.Screen name="Login" component={Login} /> 
+        <Stack.Screen name="BINANCE" component={BINANCE} />
+        <Stack.Screen name="Deposit" component={Deposit} /> 
+        <Stack.Screen name="Withdraw" component={Withdraw} /> 
+        <Stack.Screen name="Contact" component={Contact} /> 
+        <Stack.Screen name="Register" component={Register} /> 
+        <Stack.Screen name="Coins" component={Coins} /> 
+        <Stack.Screen name="Ethereum" component={Ethereum} /> 
+        <Stack.Screen name="Xrp" component={Xrp} /> 
+        <Stack.Screen name="Bitcoin" component={Bitcoin} /> 
+
+        {Menus.map((menu, key) => (
+          <Stack.Screen
+            key={key}
+			
+            initialParams={{
+              url: menu.url,
+              menuTitle: menu.menuTitle,
+              menuDesc: menu.menuDesc,
+            }}
+            name={menu.menuTitle}
+            component={MenuDetail} />
+        ))}
+
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+
